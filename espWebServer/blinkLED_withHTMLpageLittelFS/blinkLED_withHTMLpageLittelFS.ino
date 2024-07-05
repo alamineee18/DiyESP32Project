@@ -67,25 +67,31 @@ void setup() {
       inputMessage = request->getParam("state")->value();
       if (inputMessage == "on") {
         digitalWrite(ledPin, HIGH);
+        Serial.println("LED On now");
         ledState = true;
       } else if (inputMessage == "off") {
         digitalWrite(ledPin, LOW);
+        Serial.println("LED off now");
         ledState = false;
       }
       request->send(200, "text/plain", "OK");
+      Serial.println("ok");
     } else {
       request->send(400, "text/plain", "Bad Request");
+      Serial.println("Bad Request");
     }
   });
 
   // Route to get the current LED state
-  server.on("/ledState", HTTP_GET, [](AsyncWebServerRequest *request){
-    if (ledState) {
-      request->send(200, "text/plain", "on");
-    } else {
-      request->send(200, "text/plain", "off");
-    }
-  });
+  // server.on("/ledState", HTTP_GET, [](AsyncWebServerRequest *request){
+  //   if (ledState) {
+  //     request->send(200, "text/plain", "on");
+  //     Serial.println("Led Status ON");
+  //   } else {
+  //     request->send(200, "text/plain", "off");
+  //     Serial.println("Led Status Off");
+  //   }
+  // });
 
   // Start server
   server.begin();
