@@ -1,0 +1,43 @@
+<!DOCTYPE HTML><html>
+<head>
+  <title>ESP32 LED Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html { font-family: Arial; display: inline-block; text-align: center; }
+    h1 { font-size: 2.0rem; }
+    .switch { position: relative; display: inline-block; width: 120px; height: 68px }
+    .switch input { display: none; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+    .slider:before { position: absolute; content: ""; height: 52px; width: 52px; left: 8px; bottom: 8px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #2196F3; }
+    input:checked + .slider:before { transform: translateX(52px); }
+  </style>
+</head>
+<body>
+  <h1>ESP32 LED Control</h1>
+  <label class="switch">
+    <input type="checkbox" onchange="toggleCheckbox(this)" id="ledSwitch">
+    <span class="slider"></span>
+  </label>
+  <script>
+    function toggleCheckbox(element) {
+      var xhr = new XMLHttpRequest();
+      var url = "/led";
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      var state = element.checked ? "on" : "off";
+      var params = "state=" + state;
+      xhr.send(params);
+    }
+    window.onload = function() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/ledState", true);
+      xhr.onload = function() {
+        var ledState = xhr.responseText;
+        document.getElementById("ledSwitch").checked = (ledState === "on");
+      }
+      xhr.send();
+    }
+  </script>
+</body>
+</html>
